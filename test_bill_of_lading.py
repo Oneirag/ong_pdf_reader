@@ -7,7 +7,6 @@ from test_textract import test_textract
 from test_pydpf2 import test_pypdf2
 from test_pyocr import test_pyocr
 
-BL_PATH = "/home/ongpi/Documents/coal_pdfs"
 BL_NAME = "PARTNERSHIP COPY SIGN OBL.PDF"
 
 
@@ -81,7 +80,7 @@ def parse_bl(ocr_text):
 
 
 if __name__ == "__main__":
-    filename = os.path.join(BL_PATH, BL_NAME)
+    filename = os.path.join('.', BL_NAME)
     #test_pypdf2(filename)
     #print(test_textract(filename))
     ocr_text = test_pyocr(filename)
