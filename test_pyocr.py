@@ -4,10 +4,11 @@ import pyocr
 import pyocr.builders
 import io
 
+
 def test_pyocr(filename, tool="tesseract"):
     tool = pyocr.get_available_tools()[0]  # tesseract
-#    tool = pyocr.get_available_tools()[1]  # libtesseract
-#    tool = pyocr.get_available_tools()[2]  # cuneiform
+    #    tool = pyocr.get_available_tools()[1]  # libtesseract
+    #    tool = pyocr.get_available_tools()[2]  # cuneiform
     lang = tool.get_available_languages()[1]
     lang = 'eng'
 
@@ -15,8 +16,8 @@ def test_pyocr(filename, tool="tesseract"):
     req_image = []
     builder = pyocr.builders.TextBuilder()
     builder = pyocr.builders.LineBoxBuilder()
-    #builder.tesseract_flags.append("-c")
-    #builder.tesseract_flags.append("preserve_interword_spaces=1")
+    # builder.tesseract_flags.append("-c")
+    # builder.tesseract_flags.append("preserve_interword_spaces=1")
 
     image_pdf = Image(filename=filename, resolution=340)
     image_jpeg = image_pdf.convert('jpeg')
@@ -24,10 +25,10 @@ def test_pyocr(filename, tool="tesseract"):
         img_page = Image(image=img)
         req_image.append(img_page.make_blob('jpeg'))
     for img in req_image:
-            txt = tool.image_to_string(
+        txt = tool.image_to_string(
             PI.open(io.BytesIO(img)),
             lang=lang,
             builder=builder
-            )
-            final_text.append(txt)
+        )
+        final_text.append(txt)
     return final_text
