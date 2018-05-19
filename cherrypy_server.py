@@ -1,3 +1,9 @@
+"""
+Launches a simple server in port 9090 to upload a bill of lading
+The document is parsed and then the result is shown
+"""
+
+
 import os
 import os.path
 
@@ -5,9 +11,7 @@ import cherrypy
 from cherrypy.lib import static
 
 import tempfile
-from test_pyocr import test_pyocr
-from test_bill_of_lading import parse_bl
-import json
+from process_bl_pdf_with_image_alignmet import parse_bl_with_alignment
 
 localDir = os.path.dirname(__file__)
 absDir = os.path.join(os.getcwd(), localDir)
@@ -94,10 +98,8 @@ class FileDemo(object):
                         break
                     f.write(data)
                     size += len(data)
-            ocr_text = test_pyocr(temp_filename)
-            ocr_result = parse_bl(ocr_text)
-            if not ocr_text:
-                raise cherrypy.HTTPError(400, 'BILL OF LADING not found in pdf file')
+
+            ocr_result = parse_bl_with_alignment(temp_filename)
 
             html_body = ""
             for k, v in zip(ocr_result.keys(), ocr_result.values()):
@@ -105,19 +107,12 @@ class FileDemo(object):
                     k=k, v=v)
             return bootstrapTemplate("Parsed BL", html_body)
 
-            return bootstrapTemplate("Parsed BL", "<code>" + json.dumps(ocr_result) + "</code>")
-
-        return out % (size, myFile.filename, myFile.content_type)
-
     @cherrypy.expose
     def download(self):
         path = os.path.join(absDir, 'pdf_file.pdf')
         return static.serve_file(path, 'application/x-download',
-
                                  'attachment', os.path.basename(path))
 
-
-# tutconf = os.path.join(os.path.dirname(__file__), 'tutorial.conf')
 
 if __name__ == '__main__':
     # CherryPy always starts with app.root when trying to map request URIs
